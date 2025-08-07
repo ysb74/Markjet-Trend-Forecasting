@@ -25,7 +25,7 @@ except ImportError:
     mlflow = None
 
 # Import plotting and evaluation utilities
-from src.evaluation import plot_confusion_matrix, plot_actual_vs_predicted, plot_training_history
+from src.utils.evaluation import plot_confusion_matrix, plot_actual_vs_predicted, plot_training_history
 
 
 def train_evaluate_classification_model(X, y, model, model_name):

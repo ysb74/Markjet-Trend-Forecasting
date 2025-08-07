@@ -1,0 +1,57 @@
+# Market Trend Forecasting Configuration
+
+# API Configuration
+api:
+  zillow:
+    key: "${ZILLOW_API_KEY}"
+    endpoint: "https://api.zillow.com/v1/property_details"
+  realtor:
+    key: "${REALTOR_API_KEY}"
+    endpoint: "https://api.realtor.com/v1/listings"
+  crm:
+    endpoint: "${CRM_API_ENDPOINT}"
+    auth_token: "${CRM_AUTH_TOKEN}"
+
+# Model Configuration
+models:
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    random_state: 42
+  neural_network:
+    epochs: 50
+    batch_size: 32
+    learning_rate: 0.001
+  time_series:
+    arima:
+      order: [1, 1, 1]
+    prophet:
+      seasonality_mode: 'multiplicative'
+      weekly_seasonality: true
+      yearly_seasonality: true
+
+# Data Processing
+data:
+  test_size: 0.25
+  validation_size: 0.15
+  random_state: 42
+  outlier_method: 'iqr'
+  scaling_method: 'standard'
+
+# MLflow Configuration
+mlflow:
+  tracking_uri: "file://./mlruns"
+  experiment_name: "market_trend_forecasting"
+  artifact_location: "./mlartifacts"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/application.log"
+
+# Monitoring
+monitoring:
+  drift_threshold: 0.1
+  performance_threshold: 0.9
+  check_interval_hours: 24

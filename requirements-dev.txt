@@ -1,0 +1,50 @@
+# Development dependencies for Market Trend Forecasting
+
+# Testing
+pytest>=6.2.0
+pytest-cov>=2.12.0
+pytest-mock>=3.6.0
+coverage>=5.5
+
+# Code quality
+black>=21.6.0
+flake8>=3.9.0
+isort>=5.9.0
+mypy>=0.910
+
+# Documentation
+sphinx>=4.0.0
+sphinx-rtd-theme>=0.5.0
+mkdocs>=1.2.0
+mkdocs-material>=7.1.0
+
+# Jupyter and interactive development
+jupyter>=1.0.0
+jupyterlab>=3.0.0
+ipywidgets>=7.6.0
+
+# Dashboard and web
+streamlit>=1.28.0
+plotly>=5.0.0
+dash>=2.0.0
+
+# Database
+psycopg2-binary>=2.9.0
+sqlalchemy>=1.4.0
+
+# Additional utilities
+python-dotenv>=0.19.0
+click>=8.0.0
+tqdm>=4.62.0
+pyyaml>=5.4.0
+
+# API development
+fastapi>=0.68.0
+uvicorn[standard]>=0.15.0
+
+# Caching
+redis>=3.5.0
+
+# Monitoring and logging
+prometheus-client>=0.11.0
+grafana-api>=1.0.0

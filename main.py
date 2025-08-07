@@ -32,9 +32,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 # Import functions from our custom modules
-from src.data_ingestion import load_crm_data_live, scrape_public_listings, get_property_data_from_official_api, aggregate_real_estate_data
-from src.preprocessing import perform_data_cleaning, handle_outliers, drop_redundant_values_and_columns, statistical_analysis_summary, customer_behavior_summary, prepare_for_modeling
-from src.models import train_evaluate_classification_model, train_evaluate_regression_model, train_evaluate_neural_network_classification, perform_hyperparameter_optimization
+from src.data.ingestion import load_crm_data_live, scrape_public_listings, get_property_data_from_official_api, aggregate_real_estate_data
+from src.data.preprocessing import perform_data_cleaning, handle_outliers, drop_redundant_values_and_columns, statistical_analysis_summary, customer_behavior_summary, prepare_for_modeling
+from src.models.ml_models import train_evaluate_classification_model, train_evaluate_regression_model, train_evaluate_neural_network_classification, perform_hyperparameter_optimization
 from sklearn.metrics import accuracy_score, mean_squared_error # For monitoring checks
 
 # --- Model Deployment, Monitoring, and Iteration (Conceptual) ---

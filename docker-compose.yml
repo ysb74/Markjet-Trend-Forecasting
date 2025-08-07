@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # Main application with Streamlit dashboard
+  app:
+    build: .
+    container_name: market-forecasting-app
+    ports:
+      - "8501:8501"  # Streamlit dashboard
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./mlruns:/app/mlruns
+      - ./deployed_models:/app/deployed_models
+      - ./config:/app/config
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - ZILLOW_API_KEY=${ZILLOW_API_KEY:-your_zillow_key}
+      - REALTOR_API_KEY=${REALTOR_API_KEY:-your_realtor_key}
+      - CRM_API_ENDPOINT=${CRM_API_ENDPOINT:-http://localhost/api}
+      - CRM_AUTH_TOKEN=${CRM_AUTH_TOKEN:-your_crm_token}
+    depends_on:
+      - mlflow
+      - postgres
+    restart: unless-stopped
+    networks:
+      - forecasting-network
+
+  # MLflow tracking server
+  mlflow:
+    image: python:3.9-slim
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+      - ./mlflow-artifacts:/mlflow/artifacts
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=postgresql://mlflow:mlflow@postgres:5432/mlflow
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts
+    command: >
+      bash -c "
+        pip install mlflow psycopg2-binary &&
+        mlflow server 
+        --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow 
+        --default-artifact-root /mlflow/artifacts 
+        --host 0.0.0.0 
+        --port 5000
+      "
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - forecasting-network
+
+  # PostgreSQL database for MLflow
+  postgres:
+    image: postgres:13
+    container_name: mlflow-postgres
+    environment:
+      - POSTGRES_DB=mlflow
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - forecasting-network
+
+  # Jupyter notebook server for development
+  jupyter:
+    build: .
+    container_name: market-forecasting-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./:/app
+      - ./notebooks:/app/notebooks
+    environment:
+      - PYTHONPATH=/app
+      - JUPYTER_TOKEN=market-forecasting
+    command: >
+      bash -c "
+        pip install jupyter jupyterlab &&
+        jupyter lab 
+        --ip=0.0.0.0 
+        --port=8888 
+        --no-browser 
+        --allow-root 
+        --token=market-forecasting
+        --notebook-dir=/app
+      "
+    restart: unless-stopped
+    networks:
+      - forecasting-network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:6-alpine
+    container_name: market-forecasting-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - forecasting-network
+
+volumes:
+  postgres_data:
+  mlflow_artifacts:
+
+networks:
+  forecasting-network:
+    driver: bridge
